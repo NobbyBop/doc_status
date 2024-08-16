@@ -1,0 +1,72 @@
+<link rel="stylesheet" href="public\css\home.css">
+<div>
+    <form action="/" method="POST">
+        <input type="hidden" id="pullAPI" name="pullAPI" value="true">
+        <button id="pullButton">Pull New Data</button>
+        <p>Data last pulled from API at: {{timestamp}}</p>
+    </form>
+</div>
+<br>
+<form action="/" method="POST">
+    {{#if error}}
+    <p class="error">{{error}}</p>
+    {{/if}}
+    <div class="form-group">
+        <div>
+            <label for="locations">Project:</label> <br>
+            <select id="locations" name="locations[]" multiple>
+                {{#each projects}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div>
+            <label for="subfolders">Subfolder:</label> <br>
+            <select id="subfolders" name="subfolders[]" multiple>
+                {{#each subfolders}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="date-group">
+            <div>
+                <label for="startDate">From:</label>
+                <input type="date" id="startDate" name="startDate">
+            </div>
+            <div>
+                <label for="endDate">To:</label>
+                <input type="date" id="endDate" name="endDate">
+            </div>
+        </div>
+    </div>
+    <button id="generateButton" action="/home" method="POST">View Events</button>
+</form>
+{{#if events}}
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Action</th>
+                <th>File</th>
+                <th>User ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each events}}
+            <tr>
+                <td>{{this.timestamp}}</td>
+                <td>{{this.action}}</td>
+                <td>{{this.data.target_path}}</td>
+                <td>{{this.actor}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+{{else}}
+    {{#unless mute}}
+    <p>No events to report with that criteria.</p>
+    {{/unless}}
+{{/if}}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src='/public/js/home.js'></script>
